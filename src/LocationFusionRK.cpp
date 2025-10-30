@@ -18,13 +18,31 @@ LocationFusionRK::LocationFusionRK() {
 LocationFusionRK::~LocationFusionRK() {
 }
 
+LocationFusionRK &LocationFusionRK::withCmdHandler(const char *cmd, std::function<void(const Variant &data)> handler) {
+    CmdHandler cmdHandler;
+    cmdHandler.cmd = cmd;
+    cmdHandler.handler = handler;
+
+    commandHandlers.push_back(cmdHandler);
+    return *this;
+}
+
+
 void LocationFusionRK::setup() {
     os_mutex_create(&mutex);
 
     thread = new Thread("LocationFusionRK", [this]() { return threadFunction(); }, OS_THREAD_PRIORITY_DEFAULT, 3072);
+
+    if (enableCmdFunction) {
+        SubscribeOptions subscribeOptions;
+        subscribeOptions.structured(true);
+
+        Particle.subscribe("cmd", subscriptionHandlerStatic, subscribeOptions);
+
+        
+        withCmdHandler("loc-enhanced", locEnhancedStatic);
+    }
 }
-
-
 
 
 os_thread_return_t LocationFusionRK::threadFunction(void) {
@@ -82,6 +100,10 @@ void LocationFusionRK::stateBuildPublish() {
     eventData.set("cmd", Variant("loc"));
     if (Time.isValid()) {
         eventData.set("time", Time.now());
+    }
+
+    if (locEnhancedHandlers.size() > 0) {
+        eventData.set("loc_cb", 1);
     }
 
     Variant locVariant;
@@ -159,6 +181,42 @@ void LocationFusionRK::statePublishWait() {
     }
 
 }
+
+void LocationFusionRK::subscriptionHandler(const Variant &eventData) {
+    String cmd = eventData.get("cmd").toString();
+
+     _locfLog.trace("subscription %s", eventData.toJSON().c_str());
+
+    for(auto it = commandHandlers.begin(); it != commandHandlers.end(); it++) {
+        CmdHandler cmdHandler = *it;
+        
+        if (cmd == cmdHandler.cmd) {
+            cmdHandler.handler(eventData);
+        }
+    }
+}
+
+
+// [static]
+void LocationFusionRK::subscriptionHandlerStatic(CloudEvent event) {
+    // EventData is the same as particle::Variant
+    EventData eventData = event.dataStructured();
+
+    instance().subscriptionHandler(eventData);
+}
+
+void LocationFusionRK::locEnhanced(const Variant &eventData) {
+    for(auto it = locEnhancedHandlers.begin(); it != locEnhancedHandlers.end(); it++) {
+        (*it)(eventData);
+    }
+}
+
+
+// [static] 
+void LocationFusionRK::locEnhancedStatic(const Variant &eventData) {
+    instance().locEnhanced(eventData);
+}
+
 
 
 #if Wiring_WiFi 

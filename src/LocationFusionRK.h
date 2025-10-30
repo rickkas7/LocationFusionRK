@@ -165,6 +165,15 @@ public:
     };
 
     /**
+     * @brief This class is used internally for registerCommand
+     */
+    struct CmdHandler {
+        String cmd;
+        std::function<void(const Variant &data)> handler;
+    };
+
+
+    /**
      * @brief Gets the singleton instance of this class, allocating it if necessary
      * 
      * Use LocationFusionRK::instance() to instantiate the singleton.
@@ -195,6 +204,11 @@ public:
     LocationFusionRK &withAddToEventHandler(std::function<void(Variant &eventData, Variant &locVariant)> handler) { addToEventHandlers.push_back(handler); return *this; };
     
 
+    LocationFusionRK &withCmdHandler(const char *cmd, std::function<void(const Variant &data)> handler);
+
+    LocationFusionRK &withLocEnhancedHandler(std::function<void(const Variant &data)> handler) { locEnhancedHandlers.push_back(handler); return *this; };
+
+
     /**
      * @brief Request a publish now
      * 
@@ -223,6 +237,7 @@ public:
     void unlock() { os_mutex_unlock(mutex); };
 
 protected:
+
     /**
      * @brief The constructor is protected because the class is a singleton
      * 
@@ -262,6 +277,12 @@ protected:
 
     void statePublishWait();
 
+    void subscriptionHandler(const Variant &eventData);
+    static void subscriptionHandlerStatic(CloudEvent event);
+
+
+    void locEnhanced(const Variant &eventData);
+    static void locEnhancedStatic(const Variant &eventData);
 
     /**
      * @brief Mutex to protect shared resources
@@ -288,6 +309,11 @@ protected:
     bool addWiFi = false;
     bool addTower = false;
     std::vector<std::function<void(Variant &eventData, Variant &locVariant)>> addToEventHandlers;
+
+    bool enableCmdFunction = true;
+    std::vector<CmdHandler> commandHandlers;
+
+    std::vector<std::function<void(const Variant &eventData)>> locEnhancedHandlers;
 
     bool manualPublishRequested = false;
 
