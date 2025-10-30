@@ -29,6 +29,12 @@ void loop() {
 }
 
 void locEnhancedCallback(const Variant &variant) {
-    Log.info("locEnhancedCallback %s", variant.toJSON().c_str());
-}
+    Variant locEnhanced = variant.get("loc-enhanced");
+    
+    Log.info("locEnhancedCallback %s", locEnhanced.toJSON().c_str());
 
+    // Fields in locEnhanced:
+    // - h_acc horizontal accuracy (meters)
+    // - lat latitude
+    // - lon longitude
+}

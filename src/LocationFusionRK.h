@@ -62,10 +62,10 @@ public:
          */
         String bssidString() const;
 
-        uint8_t bssid[6];
-        uint8_t channel;
-        uint8_t reserved; 
-        int rssi;
+        uint8_t bssid[6]; //!< BSSID (base station MAC address)
+        uint8_t channel; //!< Wi-Fi channel number
+        uint8_t reserved; //!< reserved for future use and for structure alignment 
+        int rssi; //!< The signal strength (RSSI) 
     };
 #endif // Wiring_WiFi
 
@@ -75,13 +75,21 @@ public:
      */
     class WAPList {
     public:
+        /**
+         * @brief Scan for Wi-Fi access points.
+         * 
+         * The data is stored in this object. The method is blocking, but it's typically called from a worker thread.
+         * 
+         * Calling this clears the previous results.
+         */
         void scan();
 
+        /**
+         * @brief Return the number of access points found
+         * 
+         * @return size_t 
+         */
         size_t size() const { return wapArray.size(); };
-
-        void appendEntry(const WAPEntry &entry);
-
-        void appendEntry(const WiFiAccessPoint *wap);
 
 
         /**
@@ -101,10 +109,37 @@ public:
         void toVariant(Variant &obj, int numToInclude = 0) const;
 
     protected:
+        /**
+         * @brief Used internally to add an entry to wapArray
+         * 
+         * @param entry 
+         */
+        void appendEntry(const WAPEntry &entry);
+
+        /**
+         * @brief Used internally to add an entry to wapArray from a WiFiAccessPoint structure
+         * 
+         * @param entry 
+         */
+        void appendEntry(const WiFiAccessPoint *wap);
+
+        /**
+         * @brief Eventually called to process entries from WiFi.scan().
+         * 
+         * @param wap 
+         */
         void scanCallback(WiFiAccessPoint* wap);
 
+        /**
+         * @brief Passed to WiFi.scan()
+         * 
+         * @param wap 
+         */
         static void scanCallbackStatic(WiFiAccessPoint* wap, void *context);
 
+        /**
+         * @brief Array of access points found by Wifi.scan()
+         */
         std::vector<WAPEntry> wapArray;
     };
 #endif // Wiring_WiFi
@@ -150,8 +185,8 @@ public:
         const CellularGlobalIdentity &getCellularGlobalIdentity() const { return cgi; };
 
     protected:
-        CellularGlobalIdentity cgi = {0};
-        cellular_result_t cellularResult = -1;
+        CellularGlobalIdentity cgi = {0}; //!< Filled in by cellular_global_identity()
+        cellular_result_t cellularResult = -1; //!< Result from cellular_global_identity()
 
     };
 #endif // Wiring_Cellular
@@ -159,19 +194,10 @@ public:
      * @brief How often to publish location 
      */
     enum class PublishFrequency {
-        manual,
-        once,
-        periodic
+        manual, //!< Only when requested
+        once, //!< Once after connecting to the cloud
+        periodic //!< Periodically (period is configurable)
     };
-
-    /**
-     * @brief This class is used internally for registerCommand
-     */
-    struct CmdHandler {
-        String cmd;
-        std::function<void(const Variant &data)> handler;
-    };
-
 
     /**
      * @brief Gets the singleton instance of this class, allocating it if necessary
@@ -184,34 +210,123 @@ public:
      * @brief Perform setup operations; call this from global application setup()
      * 
      * You typically use LocationFusionRK::instance().setup();
+     * 
+     * Typically you use all of the withXXX() functions before setup.
      */
     void setup();
 
+    /**
+     * @brief Set the publish frequency to manual. Call requestPublish() to do so. This is the default.
+     * 
+     * @return LocationFusionRK& 
+     */
     LocationFusionRK &withPublishManual() { publishFrequency = PublishFrequency::manual; return *this; };
 
+    /**
+     * @brief Set the publish frequency to publish once after connecting to the cloud.
+     * 
+     * @return LocationFusionRK& 
+     */
     LocationFusionRK &withPublishOnce() { publishFrequency = PublishFrequency::once; return *this; };
 
+    /**
+     * @brief Set the publish frequency to publish periodically when cloud connected.
+     * 
+     * @param ms 
+     * @return LocationFusionRK& 
+     * 
+     * Even though the parameter is in milliseconds, you probably shouldn't publish more often than every few minutes. 
+     * 
+     * If you are using location fusion on a non-Tracker device it costs 50 data operations per fusion request, so doing location fusion
+     * frequently on the free plan may cause your account to be paused due to running out of data operations.
+     */
     LocationFusionRK &withPublishPeriodic(std::chrono::milliseconds ms) { publishFrequency = PublishFrequency::periodic; publishPeriod = ms; return *this; };
 
-
+    /**
+     * @brief Get the current publish frequency. Default is manual.
+     * 
+     * @return PublishFrequency 
+     */
     PublishFrequency getPublishFrequency() const { return publishFrequency; };
 
-
+    /**
+     * @brief Add Wi-Fi access points nearby to the loc event. Default is false.
+     * 
+     * @param enable 
+     * @return LocationFusionRK& 
+     * 
+     * This can be called on devices without Wi-Fi (B-SoM, for example) and it will be ignored.
+     */
     LocationFusionRK &withAddWiFi(bool enable = true) { addWiFi = enable; return *this; };
 
+    /**
+     * @brief Add serving cellular tower information to the loc event. Default is false.
+     * 
+     * @param enable 
+     * @return LocationFusionRK& 
+     * 
+     * This can be called on devices without cellular (P2, for example) and it will be ignored.
+     */
     LocationFusionRK &withAddTower(bool enable = true) { addTower = enable; return *this; };
 
+    /**
+     * @brief Add an "add to event" handler
+     * 
+     * @param handler 
+     * @return LocationFusionRK& 
+     * 
+     * The "add to event" handler allows you to add data to the loc event. You might do this if you want to
+     * support a cellular modem that has built-in GNSS, or use an external GNSS receiver.
+     * 
+     * The handler can be a C function or C++11 lambda and has the following prototype:
+     * 
+     * void handler(Variant &eventData, Variant &locVariant)
+     * 
+     * - eventData is the whole loc event
+     * - locVariant is the Variant for the inner loc object 
+     * 
+     */
     LocationFusionRK &withAddToEventHandler(std::function<void(Variant &eventData, Variant &locVariant)> handler) { addToEventHandlers.push_back(handler); return *this; };
     
 
+    /**
+     * @brief Adds a handler when the Particle function "cmd" is received.
+     * 
+     * @param cmd 
+     * @param handler 
+     * @return LocationFusionRK& 
+     * 
+     * Your handler is called when the "cmd" field within the function JSON matches.
+     * 
+     * The handler can be a C function or C++11 lambda. The prototype is:
+     */
     LocationFusionRK &withCmdHandler(const char *cmd, std::function<void(const Variant &data)> handler);
 
+    /**
+     * @brief Adds a handler when loc-enhanced data is calculated by the cloud.
+     * 
+     * @param handler 
+     * @return LocationFusionRK& 
+     * 
+     * The handler prototype is:
+     * 
+     * void handler(const Variant &data);
+     * 
+     * Fields typically in data in the handler:
+     * - h_acc horizontal accuracy (meters)
+     * - lat latitude
+     * - lon longitude
+     * 
+     * If you do not add a handler, the loc-enhanced data is not sent to the device. Handling loc-enhanced data locally on device adds one data operation.
+     */
     LocationFusionRK &withLocEnhancedHandler(std::function<void(const Variant &data)> handler) { locEnhancedHandlers.push_back(handler); return *this; };
 
 
     /**
      * @brief Request a publish now
      * 
+     * Works in all modes (manual, once, and periodic). Can be called when offline; it will only be calculated
+     * when connected to the cloud (breathing cyan).
      */
     void requestPublish() { manualPublishRequested = true; };
 
@@ -269,19 +384,84 @@ protected:
      */
     os_thread_return_t threadFunction(void);
 
+    /**
+     * @brief Internal state handler for idle and not connected to the cloud
+     * 
+     * Exit conditions: 
+     * - Particle.connected() return true -> stateConnected
+     */
     void stateIdle();
 
+    /**
+     * @brief Internal state handler for connected to the cloud
+     * 
+     * Exit conditions: 
+     * - Particle.connected() return false -> stateIdle
+     * - It's time to publish a location -> stateBuildPublish
+     */
     void stateConnected();
 
+    /**
+     * @brief Internal state handler for building a publish
+     * 
+     * May be in this state for a while, but the state handlers are run from a worker thread so 
+     * it won't affect operation of the rest of the system typically.
+     * 
+     * Exit conditions: 
+     * - When publish begins -> statePublishWait
+     */
     void stateBuildPublish();
 
+    /**
+     * @brief Internal state handler for waiting for the publish to complete
+     * 
+     * Exit conditions: 
+     * - When publish completes -> stateConnected
+     * 
+     * May set
+     * - manualPublishRequested (set to false on success)
+     * - publishCount (increments on success) 
+     * - nextPublishMs increased by either publishPeriod or publishFailureRetry
+     */
     void statePublishWait();
 
-    void subscriptionHandler(const Variant &eventData);
-    static void subscriptionHandlerStatic(CloudEvent event);
+    /**
+     * @brief Called from the Particle.function handler for "cmd"
+     * 
+     * @param eventData 
+     * @return int 
+     * 
+     * Calls commandHandlers, added with withCmdHandler.
+     */
+    int functionHandler(const Variant &eventData);
 
+    /**
+     * @brief Called from the Particle.function handler for "cmd" 
+     * 
+     * @param cmd 
+     * @return int 
+     * 
+     * Parses cmd as JSON and the calls the non-static functionHandler.
+     */
+    static int functionHandlerStatic(String cmd);
 
+    /**
+     * @brief Called when a "loc-enhanced" cmd function is received
+     * 
+     * @param eventData 
+     * 
+     * Calls locEnhancedHandlers.
+     */
     void locEnhanced(const Variant &eventData);
+
+
+    /**
+     * @brief Called when a "loc-enhanced" cmd function is received
+     * 
+     * @param eventData 
+     * 
+     * This just calls the non-static method with the singleton instance.
+     */
     static void locEnhancedStatic(const Variant &eventData);
 
     /**
@@ -298,32 +478,106 @@ protected:
      */
     Thread *thread = 0;
 
+    /**
+     * @brief How often to publish (manual, once, periodic)
+     */
     PublishFrequency publishFrequency = PublishFrequency::manual;
 
+    /**
+     * @brief If publishing periodic, how often to publish.
+     */
     std::chrono::milliseconds publishPeriod = 5min;
 
+    /**
+     * @brief If publish fails, how long to wait before trying again. The location will be built again.
+     */
     std::chrono::milliseconds publishFailureRetry = 1min;
 
+    /**
+     * @brief State handler. Run from the worker thread.
+     */
     std::function<void(LocationFusionRK &)> stateHandler = &LocationFusionRK::stateIdle;
 
+    /**
+     * @brief When building a location publish, add Wi-Fi access point information.
+     * 
+     * Default is false, set uskng withAddWiFi().
+     */
     bool addWiFi = false;
+
+    /**
+     * @brief When building a location publish, add serving tower information
+     * 
+     * Default is false, set uskng withAddTower().
+     */
     bool addTower = false;
+
+    /**
+     * @brief Vector of handlers to add more information to the location event.
+     * 
+     * Add using withAddToEventHandler(). You can add multiple handlers.
+     */
     std::vector<std::function<void(Variant &eventData, Variant &locVariant)>> addToEventHandlers;
 
+    /**
+     * @brief Add a function handler for "cmd"
+     * 
+     * This is enabled by default and must be enabled for loc-enhanced on device to work.
+     */
     bool enableCmdFunction = true;
+
+    /**
+     * @brief This class is used internally for registerCommand
+     */
+    struct CmdHandler {
+        String cmd; //!< The code that matches the cmd field within the JSON body
+        std::function<void(const Variant &data)> handler; //!< Function to call if cmd matches
+    };
+
+    /**
+     * @brief Handler functions to call when a cmd Particle.function is received
+     */
     std::vector<CmdHandler> commandHandlers;
 
+    /**
+     * @brief Handler functions to call when loc-enhanced is received on-device.
+     * 
+     */
     std::vector<std::function<void(const Variant &eventData)>> locEnhancedHandlers;
 
+    /**
+     * @brief true when a manual publish has been requested
+     * 
+     * This can be requested when offline as it will be handled when online. This can also
+     * be used in once and periodic modes to publish npw, out of schedule.
+     */
     bool manualPublishRequested = false;
 
+    /**
+     * @brief Number of successful publishes. THis is used to handle once mode.
+     */
     int publishCount = 0;
 
+    /**
+     * @brief Event being built or sent
+     */
     CloudEvent event;
+
+    /**
+     * @brief The data payload being build for the loc event.
+     */
     Variant eventData;
 
+    /**
+     * @brief When to publish next in periodic mode. Compare to System.millis().
+     * 
+     * Since this is a uint64_t it does not roll over so comparisons are easier.
+     */
     uint64_t nextPublishMs = 0;
 
+    /**
+     * @brief loc events contain a request ID, this is the next one to use
+     */
     int locRequestId = 1;
 
     /**

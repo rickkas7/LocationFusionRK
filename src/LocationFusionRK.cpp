@@ -34,10 +34,7 @@ void LocationFusionRK::setup() {
     thread = new Thread("LocationFusionRK", [this]() { return threadFunction(); }, OS_THREAD_PRIORITY_DEFAULT, 3072);
 
     if (enableCmdFunction) {
-        SubscribeOptions subscribeOptions;
-        subscribeOptions.structured(true);
-
-        Particle.subscribe("cmd", subscriptionHandlerStatic, subscribeOptions);
+        Particle.function("cmd", functionHandlerStatic);
 
         
         withCmdHandler("loc-enhanced", locEnhancedStatic);
@@ -182,10 +179,10 @@ void LocationFusionRK::statePublishWait() {
 
 }
 
-void LocationFusionRK::subscriptionHandler(const Variant &eventData) {
-    String cmd = eventData.get("cmd").toString();
+int LocationFusionRK::functionHandler(const Variant &eventData) {
+     _locfLog.trace("cmd function %s", eventData.toJSON().c_str());
 
-     _locfLog.trace("subscription %s", eventData.toJSON().c_str());
+     String cmd = eventData.get("cmd").toString();
 
     for(auto it = commandHandlers.begin(); it != commandHandlers.end(); it++) {
         CmdHandler cmdHandler = *it;
@@ -194,15 +191,16 @@ void LocationFusionRK::subscriptionHandler(const Variant &eventData) {
             cmdHandler.handler(eventData);
         }
     }
+    return 0;
 }
 
 
 // [static]
-void LocationFusionRK::subscriptionHandlerStatic(CloudEvent event) {
-    // EventData is the same as particle::Variant
-    EventData eventData = event.dataStructured();
+int LocationFusionRK::functionHandlerStatic(String cmd) {
 
-    instance().subscriptionHandler(eventData);
+    Variant eventData = Variant::fromJSON(cmd.c_str());
+
+    return instance().functionHandler(eventData);
 }
 
 void LocationFusionRK::locEnhanced(const Variant &eventData) {
