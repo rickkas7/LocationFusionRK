@@ -17,32 +17,12 @@ void setup() {
         .withPublishPeriodic(5min)
         .setup();
 
+#if Wiring_WiFi 
     WiFi.on();
+#endif // Wiring_WiFi
 
     Particle.connect();
 }
 
 void loop() {
 }
-
-
-/*
-    delay(20000);
-    
-    LocationFusionRK::WAPList aps;
-    aps.scan();
-    Variant apVariant;
-    aps.toVariant(apVariant);
-
-    Log.info("aps %s", apVariant.toJSON().c_str());
-
-
-    LocationFusionRK::ServingTower tower;
-    if (tower.get() == SYSTEM_ERROR_NONE) {
-        Variant towerVariant;
-        tower.toVariant(towerVariant);
-
-        Log.info("tower %s", towerVariant.toJSON().c_str());
-    }
-
-*/

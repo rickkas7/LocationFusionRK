@@ -20,7 +20,9 @@ void setup() {
         .withLocEnhancedHandler(locEnhancedCallback)
         .setup();
 
+#if Wiring_WiFi 
     WiFi.on();
+#endif // Wiring_WiFi
 
     Particle.connect();
 }
