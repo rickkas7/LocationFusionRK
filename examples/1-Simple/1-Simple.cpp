@@ -2,7 +2,7 @@
 
 #include "LocationFusionRK.h"
 
-SerialLogHandler logHandler(LOG_LEVEL_INFO);
+SerialLogHandler logHandler(LOG_LEVEL_TRACE);
 
 SYSTEM_MODE(SEMI_AUTOMATIC);
 
@@ -11,11 +11,38 @@ SYSTEM_THREAD(ENABLED); // System thread defaults to on in 6.2.0 and later and t
 #endif
 
 void setup() {
-    LocationFusionRK::instance().setup();
+    LocationFusionRK::instance()
+        .withAddTower(true)
+        .withAddWiFi(true)
+        .withPublishPeriodic(5min)
+        .setup();
+
+    WiFi.on();
 
     Particle.connect();
 }
 
 void loop() {
-    
 }
+
+
+/*
+    delay(20000);
+    
+    LocationFusionRK::WAPList aps;
+    aps.scan();
+    Variant apVariant;
+    aps.toVariant(apVariant);
+
+    Log.info("aps %s", apVariant.toJSON().c_str());
+
+
+    LocationFusionRK::ServingTower tower;
+    if (tower.get() == SYSTEM_ERROR_NONE) {
+        Variant towerVariant;
+        tower.toVariant(towerVariant);
+
+        Log.info("tower %s", towerVariant.toJSON().c_str());
+    }
+
+*/

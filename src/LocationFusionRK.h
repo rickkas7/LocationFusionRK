@@ -6,6 +6,13 @@
 // Repository: https://github.com/rickkas7/LocationFusionRK
 // License: MIT
 
+
+#ifndef SYSTEM_VERSION_v620
+#error "The LocationFusionRK library requires Device OS 6.2.0 or later because it requires Variant and CloudEvent"
+#endif
+
+#include <vector>
+
 /**
  * This class is a singleton; you do not create one as a global, on the stack, or with new.
  * 
@@ -14,6 +21,149 @@
  */
 class LocationFusionRK {
 public:
+
+#if Wiring_WiFi
+    /**
+     * @brief Class for holding information about a single Wi-Fi access point
+     * 
+     */
+    class WAPEntry {
+    public:
+        WAPEntry();
+
+        WAPEntry(const WiFiAccessPoint *wap);
+
+        /**
+         * @brief 
+         * 
+         * @param wap 
+         */
+        void fromWiFiAccessPoint(const WiFiAccessPoint *wap);
+
+        /**
+         * @brief Convert this object to JSON
+         * 
+         * @param writer JSONWriter to write the data to
+         * @param wrapInObject true to wrap the data with writer.beginObject() and writer.endObject(). Default = true.
+         */
+        void toJsonWriter(JSONWriter &writer, bool wrapInObject = true) const;
+
+        /**
+         * @brief Save this data in a Variant object. Requires Device OS 6.2.0 or later.
+         * 
+         * @param obj Variant object to add to
+         */
+        void toVariant(Variant &obj) const;
+
+        /**
+         * @brief Convert to a string in 00-00-00-00-00-00 hex format
+         * 
+         * @return String 
+         */
+        String bssidString() const;
+
+        uint8_t bssid[6];
+        uint8_t channel;
+        uint8_t reserved; 
+        int rssi;
+    };
+#endif // Wiring_WiFi
+
+#if Wiring_WiFi 
+    /**
+     * @brief Container for a list of Wi-Fi access points, along with methods for scanning and converting to JSON or Variant
+     */
+    class WAPList {
+    public:
+        void scan();
+
+        size_t size() const { return wapArray.size(); };
+
+        void appendEntry(const WAPEntry &entry);
+
+        void appendEntry(const WiFiAccessPoint *wap);
+
+
+        /**
+         * @brief Convert this object to JSON
+         * 
+         * @param writer JSONWriter to write the data to
+         * @param numToInclude Limit to this number of entries. 0 (default) is unlimited.
+         */
+        void toJsonWriter(JSONWriter &writer, int numToInclude = 0) const;
+
+        /**
+         * @brief Save this data in a Variant object. Requires Device OS 6.2.0 or later.
+         * 
+         * @param obj Variant object to add to
+         * @param numToInclude Limit to this number of entries. 0 (default) is unlimited.
+         */
+        void toVariant(Variant &obj, int numToInclude = 0) const;
+
+    protected:
+        void scanCallback(WiFiAccessPoint* wap);
+
+        static void scanCallbackStatic(WiFiAccessPoint* wap, void *context);
+
+        std::vector<WAPEntry> wapArray;
+    };
+#endif // Wiring_WiFi
+
+#if Wiring_Cellular
+    class ServingTower {
+    public:
+        /**
+         * @brief Get the current serving tower information.
+         * 
+         * @return int A system error code. SYSTEM_ERROR_NONE (0) is a success code, non-zero indicates an error. 
+         * 
+         * On;y available on cellular devices, and only works when connected to the cloud (breathing cyan).
+         */
+        int get();
+
+        /**
+         * @brief Get the result from the last get() call.
+         * 
+         * @return int A system error code. SYSTEM_ERROR_NONE (0) is a success code, non-zero indicates an error.  -1 if get() has not been called.
+         */
+        int getLastResult() const { return (int)cellularResult; };
+
+        /**
+         * @brief Convert this object to JSON
+         * 
+         * @param writer JSONWriter to write the data to
+         * @param wrapInObject true (default) to surround with beginObject() and endObject()
+         */
+        void toJsonWriter(JSONWriter &writer, bool wrapInObject = true) const;
+
+        /**
+         * @brief Save this data in a Variant object. Requires Device OS 6.2.0 or later.
+         * 
+         * @param obj Variant object to add to
+         */
+        void toVariant(Variant &obj) const;
+        /**
+         * @brief Return the current CellularGlobalIdentity. Only valid after get() is called.
+         * 
+         * @return const CellularGlobalIdentity& 
+         */
+        const CellularGlobalIdentity &getCellularGlobalIdentity() const { return cgi; };
+
+    protected:
+        CellularGlobalIdentity cgi = {0};
+        cellular_result_t cellularResult = -1;
+
+    };
+#endif // Wiring_Cellular
+    /**
+     * @brief How often to publish location 
+     */
+    enum class PublishFrequency {
+        manual,
+        once,
+        periodic
+    };
+
     /**
      * @brief Gets the singleton instance of this class, allocating it if necessary
      * 
@@ -27,6 +177,29 @@ public:
      * You typically use LocationFusionRK::instance().setup();
      */
     void setup();
+
+    LocationFusionRK &withPublishManual() { publishFrequency = PublishFrequency::manual; return *this; };
+
+    LocationFusionRK &withPublishOnce() { publishFrequency = PublishFrequency::once; return *this; };
+
+    LocationFusionRK &withPublishPeriodic(std::chrono::milliseconds ms) { publishFrequency = PublishFrequency::periodic; publishPeriod = ms; return *this; };
+
+
+    PublishFrequency getPublishFrequency() const { return publishFrequency; };
+
+
+    LocationFusionRK &withAddWiFi(bool enable = true) { addWiFi = enable; return *this; };
+
+    LocationFusionRK &withAddTower(bool enable = true) { addTower = enable; return *this; };
+
+    LocationFusionRK &withAddToEventHandler(std::function<void(Variant &eventData, Variant &locVariant)> handler) { addToEventHandlers.push_back(handler); return *this; };
+    
+
+    /**
+     * @brief Request a publish now
+     * 
+     */
+    void requestPublish() { manualPublishRequested = true; };
 
     /**
      * @brief Locks the mutex that protects shared resources
@@ -48,7 +221,6 @@ public:
      * @brief Unlocks the mutex that protects shared resources
      */
     void unlock() { os_mutex_unlock(mutex); };
-
 
 protected:
     /**
@@ -82,6 +254,15 @@ protected:
      */
     os_thread_return_t threadFunction(void);
 
+    void stateIdle();
+
+    void stateConnected();
+
+    void stateBuildPublish();
+
+    void statePublishWait();
+
+
     /**
      * @brief Mutex to protect shared resources
      * 
@@ -95,6 +276,29 @@ protected:
      * This is initialized in setup() so make sure you call the setup() method from the global application setup.
      */
     Thread *thread = 0;
+
+    PublishFrequency publishFrequency = PublishFrequency::manual;
+
+    std::chrono::milliseconds publishPeriod = 5min;
+
+    std::chrono::milliseconds publishFailureRetry = 1min;
+
+    std::function<void(LocationFusionRK &)> stateHandler = &LocationFusionRK::stateIdle;
+
+    bool addWiFi = false;
+    bool addTower = false;
+    std::vector<std::function<void(Variant &eventData, Variant &locVariant)>> addToEventHandlers;
+
+    bool manualPublishRequested = false;
+
+    int publishCount = 0;
+
+    CloudEvent event;
+    Variant eventData;
+
+    uint64_t nextPublishMs = 0;
+
+    int locRequestId = 1;
 
     /**
      * @brief Singleton instance of this class
