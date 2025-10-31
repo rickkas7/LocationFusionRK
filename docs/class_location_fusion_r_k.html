@@ -130,6 +130,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a44dae3b646645b8eb162e7b1a33ed12f" id="r_a44dae3b646645b8eb162e7b1a33ed12f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_location_fusion_r_k.html">LocationFusionRK</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a44dae3b646645b8eb162e7b1a33ed12f">withCmdHandler</a> (const char *cmd, std::function&lt; void(const Variant &amp;data)&gt; handler)</td></tr>
 <tr class="memdesc:a44dae3b646645b8eb162e7b1a33ed12f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds a handler when the Particle function "cmd" is received.  <br /></td></tr>
 <tr class="separator:a44dae3b646645b8eb162e7b1a33ed12f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a109471c64fdf6bb0bd504a55deb398e4" id="r_a109471c64fdf6bb0bd504a55deb398e4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_location_fusion_r_k.html">LocationFusionRK</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a109471c64fdf6bb0bd504a55deb398e4">withEnableCmdFunction</a> (bool enable)</td></tr>
+<tr class="memdesc:a109471c64fdf6bb0bd504a55deb398e4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enables or disables the "cmd" function handler. Default is enabled.  <br /></td></tr>
+<tr class="separator:a109471c64fdf6bb0bd504a55deb398e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7eb11317b27c7177160883245a2ed08c" id="r_a7eb11317b27c7177160883245a2ed08c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_location_fusion_r_k.html">LocationFusionRK</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7eb11317b27c7177160883245a2ed08c">withLocEnhancedHandler</a> (std::function&lt; void(const Variant &amp;data)&gt; handler)</td></tr>
 <tr class="memdesc:a7eb11317b27c7177160883245a2ed08c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds a handler when loc-enhanced data is calculated by the cloud.  <br /></td></tr>
 <tr class="separator:a7eb11317b27c7177160883245a2ed08c"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -985,6 +988,43 @@ Static Protected Attributes</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_location_fusion_r_k.html">LocationFusionRK</a>&amp;</dd></dl>
 <p>Your handler is called when the "cmd" field within the function JSON matches.</p>
 <p>The handler can be a C function or C++11 lambda. The prototype is: </p>
+
+</div>
+</div>
+<a id="a109471c64fdf6bb0bd504a55deb398e4" name="a109471c64fdf6bb0bd504a55deb398e4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a109471c64fdf6bb0bd504a55deb398e4">&#9670;&#160;</a></span>withEnableCmdFunction()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_location_fusion_r_k.html">LocationFusionRK</a> &amp; LocationFusionRK::withEnableCmdFunction </td>
+          <td>(</td>
+          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>enable</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Enables or disables the "cmd" function handler. Default is enabled. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">enable</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_location_fusion_r_k.html">LocationFusionRK</a>&amp;</dd></dl>
+<p>Must be called before <a class="el" href="#ae3286ce07f8b3080f3e7382cf6d1660d" title="Perform setup operations; call this from global application setup()">setup()</a>!</p>
+<p>If disabled, <a class="el" href="#a44dae3b646645b8eb162e7b1a33ed12f" title="Adds a handler when the Particle function &quot;cmd&quot; is received.">withCmdHandler()</a> and <a class="el" href="#a7eb11317b27c7177160883245a2ed08c" title="Adds a handler when loc-enhanced data is calculated by the cloud.">withLocEnhancedHandler()</a> will not function because they require the cmd handler.</p>
+<p>If you need to additional custom cmd handlers instead of disabling support, use <code><a class="el" href="#a44dae3b646645b8eb162e7b1a33ed12f" title="Adds a handler when the Particle function &quot;cmd&quot; is received.">withCmdHandler()</a></code> to hook your code into this library instead of the other direction. </p>
 
 </div>
 </div>

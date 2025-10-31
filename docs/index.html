@@ -74,7 +74,60 @@ $(function() {
   <div class="headertitle"><div class="title"><a class="el" href="class_location_fusion_r_k.html">LocationFusionRK</a> </div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p><a class="anchor" id="md__r_e_a_d_m_e"></a> <em>Library for Particle devices to generate enhanced geolocation requests</em> </p>
+<div class="textblock"><p><a class="anchor" id="md__r_e_a_d_m_e"></a> <em>Library for Particle devices to generate enhanced geolocation requests</em></p>
+<p>The Tracker One, Tracker SoM, and Monitor One already include built-in support for enhanced location services or <a href="https://docs.particle.io/reference/tracker/location-fusion/">location fusion</a>. Other devices, however, can take advantage of these services in some cases, and this library can simplify doing so.</p>
+<p>This library includes a small subset of features from Tracker Edge, but designed to work on non-Tracker devices. The most obvious target is the M-SoM which can use Wi-Fi and cellular tower geolocation as an alternative to GNSS.</p>
+<p>This library requires Device OS 6.2.0 or later for Variant and CloudEvent support.</p>
+<ul>
+<li>Repository: <a href="https://github.com/rickkas7/LocationFusionRK">https://github.com/rickkas7/LocationFusionRK</a></li>
+<li>License: MIT</li>
+<li>Full <a href="https://rickkas7.github.io/LocationFusionRK/">browseable API documentation</a></li>
+</ul>
+<h1>Features</h1>
+<ul>
+<li>Configurable for how often to publish <code>loc</code> events.</li>
+<li>Wi-Fi geolocation on Wi-Fi devices including the M-SoM.</li>
+<li>Single tower geolocation on all cellular devices.</li>
+<li>Multi-tower geolocation on devices with Quectel cellular modems using the <a href="https://github.com/rickkas7/QuectelTowerRK">QuectelTowerRK</a> library.</li>
+<li>GNSS location using the Quectel cellular modem on some devices such as the M404, M524, and B504e using the <a href="https://github.com/rickkas7/QuectelGnssRK">QuectelGnssRK</a> library.</li>
+<li>Extensible for other data sources, such as external GNSS modules connected by serial, I2C, or SPI.</li>
+<li><code>loc-enhanced</code>data can optionally be delivered back to user firmware so the device can know its latitude, longitude, and accuracy when determined by location fusion.</li>
+</ul>
+<h1>With other data sources</h1>
+<p>This library can also be used with these libraries:</p>
+<ul>
+<li><a href="https://github.com/rickkas7/QuectelGnssRK">QuectelGnssRK</a> to use cellular modem GNSS on some devices to get GNSS location, and if not available, fall back to cell tower and/or Wi-Fi geolocation. See example 4-location-fusion in that library.</li>
+<li><a href="https://github.com/rickkas7/QuectelTowerRK">QuectelTowerRK</a> for devices with a Quectel cellular modem such as the M-SoM to provide better location using neighbor cells using Location Fusion.</li>
+</ul>
+<p>These libraries include a static method that is compatible with <code>withAddToEventHandler()</code> in this library to make it easy to add additional data. For example, adding GNSS using Quectel cellular modem GNSS using the QuectelGnssRK library.</p>
+<div class="fragment"><div class="line"><a class="code hl_function" href="class_location_fusion_r_k.html#a632cb3bb761719e876e6749e7f83fbee">LocationFusionRK::instance</a>()</div>
+<div class="line">    .<a class="code hl_function" href="class_location_fusion_r_k.html#a7b68a745a1785282803db05f630fd294">withAddTower</a>(<span class="keyword">true</span>)</div>
+<div class="line">    .<a class="code hl_function" href="class_location_fusion_r_k.html#a7eca9c5b034b4143de9c95ef8a316dd8">withAddWiFi</a>(<span class="keyword">true</span>)</div>
+<div class="line">    .<a class="code hl_function" href="class_location_fusion_r_k.html#a535ed2c03358f337256ccb406c7531fa">withPublishPeriodic</a>(5min)</div>
+<div class="line">    .<a class="code hl_function" href="class_location_fusion_r_k.html#a7eb11317b27c7177160883245a2ed08c">withLocEnhancedHandler</a>(locEnhancedCallback)</div>
+<div class="line">    .<a class="code hl_function" href="class_location_fusion_r_k.html#a34e181d49b3d20d64eb44ac2124fa8d7">withAddToEventHandler</a>(QuectelGnssRK::addToEventHandler)</div>
+<div class="line">    .<a class="code hl_function" href="class_location_fusion_r_k.html#ae3286ce07f8b3080f3e7382cf6d1660d">setup</a>();</div>
+<div class="ttc" id="aclass_location_fusion_r_k_html_a34e181d49b3d20d64eb44ac2124fa8d7"><div class="ttname"><a href="class_location_fusion_r_k.html#a34e181d49b3d20d64eb44ac2124fa8d7">LocationFusionRK::withAddToEventHandler</a></div><div class="ttdeci">LocationFusionRK &amp; withAddToEventHandler(std::function&lt; void(Variant &amp;eventData, Variant &amp;locVariant)&gt; handler)</div><div class="ttdoc">Add an &quot;add to event&quot; handler.</div><div class="ttdef"><b>Definition</b> LocationFusionRK.h:289</div></div>
+<div class="ttc" id="aclass_location_fusion_r_k_html_a535ed2c03358f337256ccb406c7531fa"><div class="ttname"><a href="class_location_fusion_r_k.html#a535ed2c03358f337256ccb406c7531fa">LocationFusionRK::withPublishPeriodic</a></div><div class="ttdeci">LocationFusionRK &amp; withPublishPeriodic(std::chrono::milliseconds ms)</div><div class="ttdoc">Set the publish frequency to publish periodically when cloud connected.</div><div class="ttdef"><b>Definition</b> LocationFusionRK.h:243</div></div>
+<div class="ttc" id="aclass_location_fusion_r_k_html_a632cb3bb761719e876e6749e7f83fbee"><div class="ttname"><a href="class_location_fusion_r_k.html#a632cb3bb761719e876e6749e7f83fbee">LocationFusionRK::instance</a></div><div class="ttdeci">static LocationFusionRK &amp; instance()</div><div class="ttdoc">Gets the singleton instance of this class, allocating it if necessary.</div><div class="ttdef"><b>Definition</b> LocationFusionRK.cpp:8</div></div>
+<div class="ttc" id="aclass_location_fusion_r_k_html_a7b68a745a1785282803db05f630fd294"><div class="ttname"><a href="class_location_fusion_r_k.html#a7b68a745a1785282803db05f630fd294">LocationFusionRK::withAddTower</a></div><div class="ttdeci">LocationFusionRK &amp; withAddTower(bool enable=true)</div><div class="ttdoc">Add serving cellular tower information to the loc event. Default is false.</div><div class="ttdef"><b>Definition</b> LocationFusionRK.h:270</div></div>
+<div class="ttc" id="aclass_location_fusion_r_k_html_a7eb11317b27c7177160883245a2ed08c"><div class="ttname"><a href="class_location_fusion_r_k.html#a7eb11317b27c7177160883245a2ed08c">LocationFusionRK::withLocEnhancedHandler</a></div><div class="ttdeci">LocationFusionRK &amp; withLocEnhancedHandler(std::function&lt; void(const Variant &amp;data)&gt; handler)</div><div class="ttdoc">Adds a handler when loc-enhanced data is calculated by the cloud.</div><div class="ttdef"><b>Definition</b> LocationFusionRK.h:339</div></div>
+<div class="ttc" id="aclass_location_fusion_r_k_html_a7eca9c5b034b4143de9c95ef8a316dd8"><div class="ttname"><a href="class_location_fusion_r_k.html#a7eca9c5b034b4143de9c95ef8a316dd8">LocationFusionRK::withAddWiFi</a></div><div class="ttdeci">LocationFusionRK &amp; withAddWiFi(bool enable=true)</div><div class="ttdoc">Add Wi-Fi access points nearby to the loc event. Default is false.</div><div class="ttdef"><b>Definition</b> LocationFusionRK.h:260</div></div>
+<div class="ttc" id="aclass_location_fusion_r_k_html_ae3286ce07f8b3080f3e7382cf6d1660d"><div class="ttname"><a href="class_location_fusion_r_k.html#ae3286ce07f8b3080f3e7382cf6d1660d">LocationFusionRK::setup</a></div><div class="ttdeci">void setup()</div><div class="ttdoc">Perform setup operations; call this from global application setup()</div><div class="ttdef"><b>Definition</b> LocationFusionRK.cpp:31</div></div>
+</div><!-- fragment --><p>This method can also be used to connect to other data sources, like external hardware GNSS units.</p>
+<h1>Enhanced location callback</h1>
+<p>If you want to use location fusion and get the loc-enhanced results delivered back to the device, see example 2. By adding an asynchronous handler using <code>withLocEnhancedHandler()</code> the device will receive the enhanced location.</p>
+<p>Note that on non-Tracker devices, location fusion is only done if there is no GNSS lock (<code>lck</code> in the inner <code>loc</code> is 0). Thus is will never be used to enhance the GNSS location. However, this also means that when you have a GNSS location, the extra data operations fee for doing location fusion is not charged. The callback is still called, but only with the original <code>lat</code> and <code>lng</code>.</p>
+<p>See example 2-enhanced-callback.</p>
+<h1>Version history</h1>
+<h2>0.0.2 (2025-10-31)</h2>
+<ul>
+<li>Documentation updates</li>
+</ul>
+<h2>0.0.1 (2025-10-30)</h2>
+<ul>
+<li>Initial version </li>
+</ul>
 </div></div><!-- PageDoc -->
 <a href="doxygen_crawl.html"/>
 </div><!-- contents -->

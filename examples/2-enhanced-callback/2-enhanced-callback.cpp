@@ -31,6 +31,9 @@ void loop() {
 }
 
 void locEnhancedCallback(const Variant &variant) {
+    if (!variant.has("loc-enhanced")) {
+        return;
+    }
     Variant locEnhanced = variant.get("loc-enhanced");
     
     Log.info("locEnhancedCallback %s", locEnhanced.toJSON().c_str());
@@ -39,4 +42,11 @@ void locEnhancedCallback(const Variant &variant) {
     // - h_acc horizontal accuracy (meters)
     // - lat latitude
     // - lon longitude
+
+    double lat = locEnhanced.get("lat").asDouble();
+    double lon = locEnhanced.get("lon").asDouble();
+    int h_acc = locEnhanced.get("h_acc").asInt();
+
+    Log.info("decoded lat=%.8lf lon=%.8lf h_acc=%d", lat, lon, h_acc);
+
 }

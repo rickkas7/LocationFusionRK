@@ -302,6 +302,23 @@ public:
      */
     LocationFusionRK &withCmdHandler(const char *cmd, std::function<void(const Variant &data)> handler);
 
+
+    /**
+     * @brief Enables or disables the "cmd" function handler. Default is enabled.
+     * 
+     * @param enable 
+     * @return LocationFusionRK& 
+     * 
+     * Must be called before setup()! 
+     * 
+     * If disabled, withCmdHandler() and withLocEnhancedHandler() will not function because they require
+     * the cmd handler. 
+     * 
+     * If you need to additional custom cmd handlers instead of disabling support, use `withCmdHandler()` to
+     * hook your code into this library instead of the other direction.
+     */
+    LocationFusionRK &withEnableCmdFunction(bool enable) { enableCmdFunction = enable; return *this; };
+
     /**
      * @brief Adds a handler when loc-enhanced data is calculated by the cloud.
      * 
