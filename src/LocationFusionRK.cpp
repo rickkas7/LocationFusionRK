@@ -41,6 +41,19 @@ void LocationFusionRK::setup() {
     }
 }
 
+void LocationFusionRK::updateStatus(Status status) {
+    if (this->status != status) {
+        this->status = status;
+
+        for(auto it = statusHandlers.begin(); it != statusHandlers.end(); it++) {
+            auto handler = *it;
+
+            handler(status);
+        }
+    }
+}
+
+
 
 os_thread_return_t LocationFusionRK::threadFunction(void) {
     while(true) {
@@ -51,6 +64,8 @@ os_thread_return_t LocationFusionRK::threadFunction(void) {
 }
 
 void LocationFusionRK::stateIdle() {
+    updateStatus(Status::idle);
+
     if (Particle.connected()) {
         stateHandler = &LocationFusionRK::stateConnected;
         return;
@@ -58,6 +73,8 @@ void LocationFusionRK::stateIdle() {
 }
 
 void LocationFusionRK::stateConnected() {
+    updateStatus(Status::idle);
+
     if (!Particle.connected()) {
         stateHandler = &LocationFusionRK::stateIdle;
         return;
@@ -92,7 +109,9 @@ void LocationFusionRK::stateConnected() {
 }
 
 void LocationFusionRK::stateBuildPublish() {
+    updateStatus(Status::publishing);
     eventData = Variant();
+    locEnhancedReceived = false;
 
     eventData.set("cmd", Variant("loc"));
     if (Time.isValid()) {
@@ -159,9 +178,17 @@ void LocationFusionRK::stateBuildPublish() {
 
 void LocationFusionRK::statePublishWait() {
     if (event.isSent()) {
+        updateStatus(Status::publishSuccess);
         _locfLog.info("publish succeeded");
         event.clear();
-        stateHandler = &LocationFusionRK::stateConnected;
+
+        if (locEnhancedHandlers.size()) {
+            stateTime = millis();
+            stateHandler = &LocationFusionRK::stateLocEnhancedWait;
+        }
+        else {
+            stateHandler = &LocationFusionRK::stateConnected;
+        }
 
         manualPublishRequested = false;
         publishCount++;
@@ -170,6 +197,7 @@ void LocationFusionRK::statePublishWait() {
     }
     else 
     if (!event.isOk()) {
+        updateStatus(Status::publishFail);
         _locfLog.info("publish failed error=%d", event.error());
         event.clear();
         stateHandler = &LocationFusionRK::stateConnected;
@@ -178,6 +206,22 @@ void LocationFusionRK::statePublishWait() {
     }
 
 }
+
+void LocationFusionRK::stateLocEnhancedWait() {
+    updateStatus(Status::locEnhancedWait);
+
+    if (locEnhancedReceived) {
+        updateStatus(Status::locEnhancedSuccess);
+        stateHandler = &LocationFusionRK::stateConnected;
+        return;
+    }
+    if (millis() - stateTime >= locEnhancedTimeout.count()) {
+        updateStatus(Status::locEnhancedFail);
+        stateHandler = &LocationFusionRK::stateConnected;
+        return;
+    }
+}
+
 
 int LocationFusionRK::functionHandler(const Variant &eventData) {
      _locfLog.trace("cmd function %s", eventData.toJSON().c_str());
@@ -204,6 +248,7 @@ int LocationFusionRK::functionHandlerStatic(String cmd) {
 }
 
 void LocationFusionRK::locEnhanced(const Variant &eventData) {
+    locEnhancedReceived = true;
     for(auto it = locEnhancedHandlers.begin(); it != locEnhancedHandlers.end(); it++) {
         (*it)(eventData);
     }

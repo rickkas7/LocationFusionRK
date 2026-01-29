@@ -57,6 +57,10 @@ See example 2-enhanced-callback.
 
 ## Version history
 
+### 0.0.3 (2026-01-29)
+
+- Added getStatus() and withStatusHandler() methods. These can be used to know if the publish completed, or if the library is idle for sleep control.
+
 ### 0.0.2 (2025-10-31)
 
 - Documentation updates

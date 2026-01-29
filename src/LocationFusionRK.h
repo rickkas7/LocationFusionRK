@@ -200,6 +200,31 @@ public:
     };
 
     /**
+     * @brief Current status of this library
+     * 
+     * Note that the publishSuccess and publishFailed status codes are only useful when
+     * using the handler callback. Almost immediately after that notification, the status
+     * goes to idle, so it would be hard to catch this status by polling.
+     * 
+     * The locEnhancedSuccess and locEnhancedFail also require the callback to be useful.
+     * Note the locEnhanced status events are only used if you have enabled a loc-enhanced
+     * callback to receive the events on-device. If you do not do this, the loc-enhanced
+     * will only exist in the cloud and not be sent back to the device.
+     * 
+     * If you are implementing sleep control, you can go go sleep if the status is idle.
+     */
+    enum class Status:int {
+        idle = 0, //!< is idle (cloud connected or not)
+        publishing = 1, //!< publishing a loc event (includes building the event)
+        publishSuccess = 2, //!< publish succeeded
+        publishFail = 3, //!< publish failed
+        locEnhancedWait = 4, //!< waiting for a loc-enhanced reply
+        locEnhancedSuccess = 5, //!< loc-enhanced reply received
+        locEnhancedFail = 6 //!< loc-enhanced reply timed out        
+    };
+     
+
+    /**
      * @brief Gets the singleton instance of this class, allocating it if necessary
      * 
      * Use LocationFusionRK::instance() to instantiate the singleton.
@@ -338,6 +363,25 @@ public:
      */
     LocationFusionRK &withLocEnhancedHandler(std::function<void(const Variant &data)> handler) { locEnhancedHandlers.push_back(handler); return *this; };
 
+    /**
+     * @brief Adds a handler when the status has changed. Added in version 0.0.3.
+     * 
+     * @param cmd 
+     * @param handler 
+     * @return LocationFusionRK& 
+     * 
+     * Your handler is called when the "cmd" field within the function JSON matches.
+     * 
+     * The handler can be a C function or C++11 lambda. The prototype is:
+     * 
+     * void handler(Status status)
+     * 
+     * - status The new status value
+     * 
+     * This method uses a callback to be notified when the status changes. It is called from the library's
+     * worker thread so you should not do anything that will block in your callback.
+     */
+    LocationFusionRK &withStatusHandler(const char *cmd, std::function<void(Status)> handler) { statusHandlers.push_back(handler); return *this; };
 
     /**
      * @brief Request a publish now
@@ -346,6 +390,16 @@ public:
      * when connected to the cloud (breathing cyan).
      */
     void requestPublish() { manualPublishRequested = true; };
+
+
+    /**
+     * @brief Get the current status of the library (idle, publishing, etc.)
+     * 
+     * @return Status 
+     * 
+     * This method is used for polling. The be called when the status changes, see withStatusHandler.
+     */
+    Status getStatus() const { return status; };
 
     /**
      * @brief Locks the mutex that protects shared resources
@@ -393,6 +447,15 @@ protected:
     LocationFusionRK& operator=(const LocationFusionRK&) = delete;
 
     /**
+     * @brief Update the status and call the status handlers. Used internally. Added in 0.0.3.
+     * 
+     * @param status 
+     * 
+     * This only calls the status handlers if the status changes.
+     */
+    void updateStatus(Status status);
+
+    /**
      * @brief Worker thread function
      * 
      * This method is called to perform operations in the worker thread.
@@ -433,7 +496,8 @@ protected:
      * @brief Internal state handler for waiting for the publish to complete
      * 
      * Exit conditions: 
-     * - When publish completes -> stateConnected
+     * - When publish completes -> stateConnected if not receiving loc-enhanced on-device
+     *                          -> stateLocEnhancedWait if receiving loc-enhanced on-device
      * 
      * May set
      * - manualPublishRequested (set to false on success)
@@ -441,6 +505,15 @@ protected:
      * - nextPublishMs increased by either publishPeriod or publishFailureRetry
      */
     void statePublishWait();
+
+    /**
+     * @brief Internal state handler for waiting for the loc-enhanced to be received
+     * 
+     * Exit conditions: 
+     * - When loc-enhanced is received or times out  -> stateConnected
+     */
+    void stateLocEnhancedWait();
+
 
     /**
      * @brief Called from the Particle.function handler for "cmd"
@@ -509,6 +582,21 @@ protected:
      * @brief If publish fails, how long to wait before trying again. The location will be built again.
      */
     std::chrono::milliseconds publishFailureRetry = 1min;
+
+    /**
+     * @brief Amount of time to wait for loc-enhanced
+     */
+    std::chrono::milliseconds locEnhancedTimeout = 1min;
+
+    /**
+     * @brief Used to handle loc-enhanced state changes
+     */
+    bool locEnhancedReceived = false;
+
+    /**
+     * @brief Used for calculating the locEnhancedTimeout
+     */
+    unsigned long stateTime = 0;
 
     /**
      * @brief State handler. Run from the worker thread.
@@ -596,6 +684,17 @@ protected:
      * @brief loc events contain a request ID, this is the next one to use
      */
     int locRequestId = 1;
+
+    /**
+     * @brief Current status pof the library
+     */
+    Status status = Status::idle;
+
+    /**
+     * @brief Handlers to call when the status changes
+     */
+    std::vector<std::function<void(Status)>> statusHandlers;
+    
 
     /**
      * @brief Singleton instance of this class
