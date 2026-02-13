@@ -100,6 +100,19 @@ Public Types</h2></td></tr>
  }</td></tr>
 <tr class="memdesc:aa45c9ec7a5974e9d4eb277134ec5fe0b"><td class="mdescLeft">&#160;</td><td class="mdescRight">How often to publish location.  <a href="#aa45c9ec7a5974e9d4eb277134ec5fe0b">More...</a><br /></td></tr>
 <tr class="separator:aa45c9ec7a5974e9d4eb277134ec5fe0b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac482bacda7a2b3243a647ea705c283ee" id="r_ac482bacda7a2b3243a647ea705c283ee"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac482bacda7a2b3243a647ea705c283ee">Status</a> : int { <br />
+&#160;&#160;<a class="el" href="#ac482bacda7a2b3243a647ea705c283eeaec2f993aec2c27fc750119ab17b16cdb">idle</a> = 0
+, <a class="el" href="#ac482bacda7a2b3243a647ea705c283eea5793ad9f379fc633f7bbf462deae4809">publishing</a> = 1
+, <a class="el" href="#ac482bacda7a2b3243a647ea705c283eea6a6c66583fd1aeb2a0b9c53879f8c659">publishSuccess</a> = 2
+, <a class="el" href="#ac482bacda7a2b3243a647ea705c283eeacfbaa8e09a7ec2b7cf1f8c7a68047a62">publishFail</a> = 3
+, <br />
+&#160;&#160;<a class="el" href="#ac482bacda7a2b3243a647ea705c283eea5b77075cb0b1b909a48b72fc146e82bf">locEnhancedWait</a> = 4
+, <a class="el" href="#ac482bacda7a2b3243a647ea705c283eea15529694081d9115c952ed493929914b">locEnhancedSuccess</a> = 5
+, <a class="el" href="#ac482bacda7a2b3243a647ea705c283eea5d03d7ec8b63a0bd6d475db63b1c3dc8">locEnhancedFail</a> = 6
+<br />
+ }</td></tr>
+<tr class="memdesc:ac482bacda7a2b3243a647ea705c283ee"><td class="mdescLeft">&#160;</td><td class="mdescRight">Current status of this library.  <a href="#ac482bacda7a2b3243a647ea705c283ee">More...</a><br /></td></tr>
+<tr class="separator:ac482bacda7a2b3243a647ea705c283ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -136,9 +149,18 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a7eb11317b27c7177160883245a2ed08c" id="r_a7eb11317b27c7177160883245a2ed08c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_location_fusion_r_k.html">LocationFusionRK</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7eb11317b27c7177160883245a2ed08c">withLocEnhancedHandler</a> (std::function&lt; void(const Variant &amp;data)&gt; handler)</td></tr>
 <tr class="memdesc:a7eb11317b27c7177160883245a2ed08c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds a handler when loc-enhanced data is calculated by the cloud.  <br /></td></tr>
 <tr class="separator:a7eb11317b27c7177160883245a2ed08c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad623e5db1f26c2bd2ec4b4d012670cb5" id="r_ad623e5db1f26c2bd2ec4b4d012670cb5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_location_fusion_r_k.html">LocationFusionRK</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad623e5db1f26c2bd2ec4b4d012670cb5">withStatusHandler</a> (const char *cmd, std::function&lt; void(<a class="el" href="#ac482bacda7a2b3243a647ea705c283ee">Status</a>)&gt; handler)</td></tr>
+<tr class="memdesc:ad623e5db1f26c2bd2ec4b4d012670cb5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds a handler when the status has changed. Added in version 0.0.3.  <br /></td></tr>
+<tr class="separator:ad623e5db1f26c2bd2ec4b4d012670cb5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1bc1bcbc72e30d3d95fd4f7108ceff2b" id="r_a1bc1bcbc72e30d3d95fd4f7108ceff2b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_location_fusion_r_k.html">LocationFusionRK</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1bc1bcbc72e30d3d95fd4f7108ceff2b">withThreadStackSize</a> (size_t size)</td></tr>
+<tr class="memdesc:a1bc1bcbc72e30d3d95fd4f7108ceff2b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the worker thread stack size. Must be set before <a class="el" href="#ae3286ce07f8b3080f3e7382cf6d1660d" title="Perform setup operations; call this from global application setup()">setup()</a>  <br /></td></tr>
+<tr class="separator:a1bc1bcbc72e30d3d95fd4f7108ceff2b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a74a14902b67f73f700ea8984588046b3" id="r_a74a14902b67f73f700ea8984588046b3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a74a14902b67f73f700ea8984588046b3">requestPublish</a> ()</td></tr>
 <tr class="memdesc:a74a14902b67f73f700ea8984588046b3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Request a publish now.  <br /></td></tr>
 <tr class="separator:a74a14902b67f73f700ea8984588046b3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a959c28b510f821afc4f77176a4936dda" id="r_a959c28b510f821afc4f77176a4936dda"><td class="memItemLeft" align="right" valign="top"><a class="el" href="#ac482bacda7a2b3243a647ea705c283ee">Status</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a959c28b510f821afc4f77176a4936dda">getStatus</a> () const</td></tr>
+<tr class="memdesc:a959c28b510f821afc4f77176a4936dda"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the current status of the library (idle, publishing, etc.)  <br /></td></tr>
+<tr class="separator:a959c28b510f821afc4f77176a4936dda"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a383b25eb9fab626ea3be28036f27c78d" id="r_a383b25eb9fab626ea3be28036f27c78d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a383b25eb9fab626ea3be28036f27c78d">lock</a> ()</td></tr>
 <tr class="memdesc:a383b25eb9fab626ea3be28036f27c78d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Locks the mutex that protects shared resources.  <br /></td></tr>
 <tr class="separator:a383b25eb9fab626ea3be28036f27c78d"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -169,6 +191,9 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~LocationFusionRK<
 <tr class="separator:a9243e6dd0fc2f53d3f187584196e908f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4a7ac263c0d90bba2c37a1637c7ab050" id="r_a4a7ac263c0d90bba2c37a1637c7ab050"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_location_fusion_r_k.html">LocationFusionRK</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4a7ac263c0d90bba2c37a1637c7ab050">operator=</a> (const <a class="el" href="class_location_fusion_r_k.html">LocationFusionRK</a> &amp;)=delete</td></tr>
 <tr class="separator:a4a7ac263c0d90bba2c37a1637c7ab050"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad0871788a894e414ed263f1d5b17f079" id="r_ad0871788a894e414ed263f1d5b17f079"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad0871788a894e414ed263f1d5b17f079">updateStatus</a> (<a class="el" href="#ac482bacda7a2b3243a647ea705c283ee">Status</a> <a class="el" href="#afd9960ad62087b1ba91bc872e59a0905">status</a>)</td></tr>
+<tr class="memdesc:ad0871788a894e414ed263f1d5b17f079"><td class="mdescLeft">&#160;</td><td class="mdescRight">Update the status and call the status handlers. Used internally. Added in 0.0.3.  <br /></td></tr>
+<tr class="separator:ad0871788a894e414ed263f1d5b17f079"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae2383f534b6d500ae979ab994ab3df5d" id="r_ae2383f534b6d500ae979ab994ab3df5d"><td class="memItemLeft" align="right" valign="top">os_thread_return_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae2383f534b6d500ae979ab994ab3df5d">threadFunction</a> (void)</td></tr>
 <tr class="memdesc:ae2383f534b6d500ae979ab994ab3df5d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Worker thread function.  <br /></td></tr>
 <tr class="separator:ae2383f534b6d500ae979ab994ab3df5d"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -184,6 +209,9 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~LocationFusionRK<
 <tr class="memitem:a44fa7eb853ebc65e7f0cebab693d6a67" id="r_a44fa7eb853ebc65e7f0cebab693d6a67"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a44fa7eb853ebc65e7f0cebab693d6a67">statePublishWait</a> ()</td></tr>
 <tr class="memdesc:a44fa7eb853ebc65e7f0cebab693d6a67"><td class="mdescLeft">&#160;</td><td class="mdescRight">Internal state handler for waiting for the publish to complete.  <br /></td></tr>
 <tr class="separator:a44fa7eb853ebc65e7f0cebab693d6a67"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adb1aae689fd4eabb0b3f41587aabbaa3" id="r_adb1aae689fd4eabb0b3f41587aabbaa3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#adb1aae689fd4eabb0b3f41587aabbaa3">stateLocEnhancedWait</a> ()</td></tr>
+<tr class="memdesc:adb1aae689fd4eabb0b3f41587aabbaa3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Internal state handler for waiting for the loc-enhanced to be received.  <br /></td></tr>
+<tr class="separator:adb1aae689fd4eabb0b3f41587aabbaa3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af79526582bb04bd28357e932cdd3f0d1" id="r_af79526582bb04bd28357e932cdd3f0d1"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af79526582bb04bd28357e932cdd3f0d1">functionHandler</a> (const Variant &amp;<a class="el" href="#a50aee379b3a94af0ab1649d60b46968f">eventData</a>)</td></tr>
 <tr class="memdesc:af79526582bb04bd28357e932cdd3f0d1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Called from the Particle.function handler for "cmd".  <br /></td></tr>
 <tr class="separator:af79526582bb04bd28357e932cdd3f0d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -208,6 +236,10 @@ Protected Attributes</h2></td></tr>
 <tr class="memitem:a8c267d646bf8b2255b776c9303a398fd" id="r_a8c267d646bf8b2255b776c9303a398fd"><td class="memItemLeft" align="right" valign="top">Thread *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8c267d646bf8b2255b776c9303a398fd">thread</a> = 0</td></tr>
 <tr class="memdesc:a8c267d646bf8b2255b776c9303a398fd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Worker thread instance class.  <br /></td></tr>
 <tr class="separator:a8c267d646bf8b2255b776c9303a398fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa59d0d0083ae2e30af6db5e22564d3b2" id="r_aa59d0d0083ae2e30af6db5e22564d3b2"><td class="memItemLeft" align="right" valign="top"><a id="aa59d0d0083ae2e30af6db5e22564d3b2" name="aa59d0d0083ae2e30af6db5e22564d3b2"></a>
+size_t&#160;</td><td class="memItemRight" valign="bottom"><b>threadStackSize</b> = 6144</td></tr>
+<tr class="memdesc:aa59d0d0083ae2e30af6db5e22564d3b2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Size of the work thread stack. Must set before <a class="el" href="#ae3286ce07f8b3080f3e7382cf6d1660d" title="Perform setup operations; call this from global application setup()">setup()</a> <br /></td></tr>
+<tr class="separator:aa59d0d0083ae2e30af6db5e22564d3b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a60dc89f225abb59352bdd7960693287f" id="r_a60dc89f225abb59352bdd7960693287f"><td class="memItemLeft" align="right" valign="top"><a id="a60dc89f225abb59352bdd7960693287f" name="a60dc89f225abb59352bdd7960693287f"></a>
 <a class="el" href="#aa45c9ec7a5974e9d4eb277134ec5fe0b">PublishFrequency</a>&#160;</td><td class="memItemRight" valign="bottom"><b>publishFrequency</b> = <a class="el" href="#aa45c9ec7a5974e9d4eb277134ec5fe0ba3c78b35502b2693fefdfc51cba3a53a5">PublishFrequency::manual</a></td></tr>
 <tr class="memdesc:a60dc89f225abb59352bdd7960693287f"><td class="mdescLeft">&#160;</td><td class="mdescRight">How often to publish (manual, once, periodic) <br /></td></tr>
@@ -220,6 +252,18 @@ std::chrono::milliseconds&#160;</td><td class="memItemRight" valign="bottom"><b>
 std::chrono::milliseconds&#160;</td><td class="memItemRight" valign="bottom"><b>publishFailureRetry</b> = 1min</td></tr>
 <tr class="memdesc:a606fc2cc8aab8352897f024010460436"><td class="mdescLeft">&#160;</td><td class="mdescRight">If publish fails, how long to wait before trying again. The location will be built again. <br /></td></tr>
 <tr class="separator:a606fc2cc8aab8352897f024010460436"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad1c8a29db216a66551587634d9fb5f73" id="r_ad1c8a29db216a66551587634d9fb5f73"><td class="memItemLeft" align="right" valign="top"><a id="ad1c8a29db216a66551587634d9fb5f73" name="ad1c8a29db216a66551587634d9fb5f73"></a>
+std::chrono::milliseconds&#160;</td><td class="memItemRight" valign="bottom"><b>locEnhancedTimeout</b> = 1min</td></tr>
+<tr class="memdesc:ad1c8a29db216a66551587634d9fb5f73"><td class="mdescLeft">&#160;</td><td class="mdescRight">Amount of time to wait for loc-enhanced. <br /></td></tr>
+<tr class="separator:ad1c8a29db216a66551587634d9fb5f73"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6b9c23b6d4d758f28cdd39cb5c0fd701" id="r_a6b9c23b6d4d758f28cdd39cb5c0fd701"><td class="memItemLeft" align="right" valign="top"><a id="a6b9c23b6d4d758f28cdd39cb5c0fd701" name="a6b9c23b6d4d758f28cdd39cb5c0fd701"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>locEnhancedReceived</b> = false</td></tr>
+<tr class="memdesc:a6b9c23b6d4d758f28cdd39cb5c0fd701"><td class="mdescLeft">&#160;</td><td class="mdescRight">Used to handle loc-enhanced state changes. <br /></td></tr>
+<tr class="separator:a6b9c23b6d4d758f28cdd39cb5c0fd701"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5d4270067466a5115523f841dd5ff4d3" id="r_a5d4270067466a5115523f841dd5ff4d3"><td class="memItemLeft" align="right" valign="top"><a id="a5d4270067466a5115523f841dd5ff4d3" name="a5d4270067466a5115523f841dd5ff4d3"></a>
+unsigned long&#160;</td><td class="memItemRight" valign="bottom"><b>stateTime</b> = 0</td></tr>
+<tr class="memdesc:a5d4270067466a5115523f841dd5ff4d3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Used for calculating the locEnhancedTimeout. <br /></td></tr>
+<tr class="separator:a5d4270067466a5115523f841dd5ff4d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab025b2c64172ba0fb6e43e609ecddaa6" id="r_ab025b2c64172ba0fb6e43e609ecddaa6"><td class="memItemLeft" align="right" valign="top"><a id="ab025b2c64172ba0fb6e43e609ecddaa6" name="ab025b2c64172ba0fb6e43e609ecddaa6"></a>
 std::function&lt; void(<a class="el" href="class_location_fusion_r_k.html">LocationFusionRK</a> &amp;)&#160;</td><td class="memItemRight" valign="bottom"><b>stateHandler</b> ) = &amp;<a class="el" href="#ae1df19422c23ef16c507e892f075771e">LocationFusionRK::stateIdle</a></td></tr>
 <tr class="memdesc:ab025b2c64172ba0fb6e43e609ecddaa6"><td class="mdescLeft">&#160;</td><td class="mdescRight">State handler. Run from the worker thread. <br /></td></tr>
@@ -266,6 +310,14 @@ Variant&#160;</td><td class="memItemRight" valign="bottom"><b>eventData</b></td>
 int&#160;</td><td class="memItemRight" valign="bottom"><b>locRequestId</b> = 1</td></tr>
 <tr class="memdesc:ab3a4466ab1770e550a6d281c5052fda0"><td class="mdescLeft">&#160;</td><td class="mdescRight">loc events contain a request ID, this is the next one to use <br /></td></tr>
 <tr class="separator:ab3a4466ab1770e550a6d281c5052fda0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afd9960ad62087b1ba91bc872e59a0905" id="r_afd9960ad62087b1ba91bc872e59a0905"><td class="memItemLeft" align="right" valign="top"><a id="afd9960ad62087b1ba91bc872e59a0905" name="afd9960ad62087b1ba91bc872e59a0905"></a>
+<a class="el" href="#ac482bacda7a2b3243a647ea705c283ee">Status</a>&#160;</td><td class="memItemRight" valign="bottom"><b>status</b> = <a class="el" href="#ac482bacda7a2b3243a647ea705c283eeaec2f993aec2c27fc750119ab17b16cdb">Status::idle</a></td></tr>
+<tr class="memdesc:afd9960ad62087b1ba91bc872e59a0905"><td class="mdescLeft">&#160;</td><td class="mdescRight">Current status pof the library. <br /></td></tr>
+<tr class="separator:afd9960ad62087b1ba91bc872e59a0905"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a36ceb02b7e3fca6d28096cc4eed9e055" id="r_a36ceb02b7e3fca6d28096cc4eed9e055"><td class="memItemLeft" align="right" valign="top"><a id="a36ceb02b7e3fca6d28096cc4eed9e055" name="a36ceb02b7e3fca6d28096cc4eed9e055"></a>
+std::vector&lt; std::function&lt; void(<a class="el" href="#ac482bacda7a2b3243a647ea705c283ee">Status</a>)&gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>statusHandlers</b></td></tr>
+<tr class="memdesc:a36ceb02b7e3fca6d28096cc4eed9e055"><td class="mdescLeft">&#160;</td><td class="mdescRight">Handlers to call when the status changes. <br /></td></tr>
+<tr class="separator:a36ceb02b7e3fca6d28096cc4eed9e055"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-static-attribs" name="pro-static-attribs"></a>
 Static Protected Attributes</h2></td></tr>
@@ -304,6 +356,50 @@ Static Protected Attributes</h2></td></tr>
 <tr><td class="fieldname"><a id="aa45c9ec7a5974e9d4eb277134ec5fe0bae2eff6c2dafd909df8508f891b385d88" name="aa45c9ec7a5974e9d4eb277134ec5fe0bae2eff6c2dafd909df8508f891b385d88"></a>once&#160;</td><td class="fielddoc"><p>Once after connecting to the cloud. </p>
 </td></tr>
 <tr><td class="fieldname"><a id="aa45c9ec7a5974e9d4eb277134ec5fe0bae6ffdec5e14fce371eb7ae99edebbbee" name="aa45c9ec7a5974e9d4eb277134ec5fe0bae6ffdec5e14fce371eb7ae99edebbbee"></a>periodic&#160;</td><td class="fielddoc"><p>Periodically (period is configurable) </p>
+</td></tr>
+</table>
+
+</div>
+</div>
+<a id="ac482bacda7a2b3243a647ea705c283ee" name="ac482bacda7a2b3243a647ea705c283ee"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac482bacda7a2b3243a647ea705c283ee">&#9670;&#160;</a></span>Status</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum class <a class="el" href="#ac482bacda7a2b3243a647ea705c283ee">LocationFusionRK::Status</a> : int</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">strong</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Current status of this library. </p>
+<p>Note that the publishSuccess and publishFailed status codes are only useful when using the handler callback. Almost immediately after that notification, the status goes to idle, so it would be hard to catch this status by polling.</p>
+<p>The locEnhancedSuccess and locEnhancedFail also require the callback to be useful. Note the locEnhanced status events are only used if you have enabled a loc-enhanced callback to receive the events on-device. If you do not do this, the loc-enhanced will only exist in the cloud and not be sent back to the device.</p>
+<p>If you are implementing sleep control, you can go go sleep if the status is idle. </p>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ac482bacda7a2b3243a647ea705c283eeaec2f993aec2c27fc750119ab17b16cdb" name="ac482bacda7a2b3243a647ea705c283eeaec2f993aec2c27fc750119ab17b16cdb"></a>idle&#160;</td><td class="fielddoc"><p>is idle (cloud connected or not) </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ac482bacda7a2b3243a647ea705c283eea5793ad9f379fc633f7bbf462deae4809" name="ac482bacda7a2b3243a647ea705c283eea5793ad9f379fc633f7bbf462deae4809"></a>publishing&#160;</td><td class="fielddoc"><p>publishing a loc event (includes building the event) </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ac482bacda7a2b3243a647ea705c283eea6a6c66583fd1aeb2a0b9c53879f8c659" name="ac482bacda7a2b3243a647ea705c283eea6a6c66583fd1aeb2a0b9c53879f8c659"></a>publishSuccess&#160;</td><td class="fielddoc"><p>publish succeeded </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ac482bacda7a2b3243a647ea705c283eeacfbaa8e09a7ec2b7cf1f8c7a68047a62" name="ac482bacda7a2b3243a647ea705c283eeacfbaa8e09a7ec2b7cf1f8c7a68047a62"></a>publishFail&#160;</td><td class="fielddoc"><p>publish failed </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ac482bacda7a2b3243a647ea705c283eea5b77075cb0b1b909a48b72fc146e82bf" name="ac482bacda7a2b3243a647ea705c283eea5b77075cb0b1b909a48b72fc146e82bf"></a>locEnhancedWait&#160;</td><td class="fielddoc"><p>waiting for a loc-enhanced reply </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ac482bacda7a2b3243a647ea705c283eea15529694081d9115c952ed493929914b" name="ac482bacda7a2b3243a647ea705c283eea15529694081d9115c952ed493929914b"></a>locEnhancedSuccess&#160;</td><td class="fielddoc"><p>loc-enhanced reply received </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ac482bacda7a2b3243a647ea705c283eea5d03d7ec8b63a0bd6d475db63b1c3dc8" name="ac482bacda7a2b3243a647ea705c283eea5d03d7ec8b63a0bd6d475db63b1c3dc8"></a>locEnhancedFail&#160;</td><td class="fielddoc"><p>loc-enhanced reply timed out <br  />
+ </p>
 </td></tr>
 </table>
 
@@ -460,6 +556,35 @@ Static Protected Attributes</h2></td></tr>
 
 <p>Get the current publish frequency. Default is manual. </p>
 <dl class="section return"><dt>Returns</dt><dd>PublishFrequency </dd></dl>
+
+</div>
+</div>
+<a id="a959c28b510f821afc4f77176a4936dda" name="a959c28b510f821afc4f77176a4936dda"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a959c28b510f821afc4f77176a4936dda">&#9670;&#160;</a></span>getStatus()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="#ac482bacda7a2b3243a647ea705c283ee">Status</a> LocationFusionRK::getStatus </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Get the current status of the library (idle, publishing, etc.) </p>
+<dl class="section return"><dt>Returns</dt><dd>Status</dd></dl>
+<p>This method is used for polling. The be called when the status changes, see withStatusHandler. </p>
 
 </div>
 </div>
@@ -755,6 +880,36 @@ Static Protected Attributes</h2></td></tr>
 
 </div>
 </div>
+<a id="adb1aae689fd4eabb0b3f41587aabbaa3" name="adb1aae689fd4eabb0b3f41587aabbaa3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adb1aae689fd4eabb0b3f41587aabbaa3">&#9670;&#160;</a></span>stateLocEnhancedWait()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void LocationFusionRK::stateLocEnhancedWait </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Internal state handler for waiting for the loc-enhanced to be received. </p>
+<p>Exit conditions:</p><ul>
+<li>When loc-enhanced is received or times out -&gt; stateConnected </li>
+</ul>
+
+</div>
+</div>
 <a id="a44fa7eb853ebc65e7f0cebab693d6a67" name="a44fa7eb853ebc65e7f0cebab693d6a67"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a44fa7eb853ebc65e7f0cebab693d6a67">&#9670;&#160;</a></span>statePublishWait()</h2>
 
@@ -780,7 +935,7 @@ Static Protected Attributes</h2></td></tr>
 
 <p>Internal state handler for waiting for the publish to complete. </p>
 <p>Exit conditions:</p><ul>
-<li>When publish completes -&gt; stateConnected</li>
+<li>When publish completes -&gt; stateConnected if not receiving loc-enhanced on-device -&gt; stateLocEnhancedWait if receiving loc-enhanced on-device</li>
 </ul>
 <p>May set</p><ul>
 <li>manualPublishRequested (set to false on success)</li>
@@ -844,6 +999,40 @@ Static Protected Attributes</h2></td></tr>
 
 <p>Attempts to lock the mutex that protects shared resources. </p>
 <dl class="section return"><dt>Returns</dt><dd>true if the mutex was locked or false if it was busy already. </dd></dl>
+
+</div>
+</div>
+<a id="ad0871788a894e414ed263f1d5b17f079" name="ad0871788a894e414ed263f1d5b17f079"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad0871788a894e414ed263f1d5b17f079">&#9670;&#160;</a></span>updateStatus()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void LocationFusionRK::updateStatus </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="#ac482bacda7a2b3243a647ea705c283ee">Status</a></td>          <td class="paramname"><span class="paramname"><em>status</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Update the status and call the status handlers. Used internally. Added in 0.0.3. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">status</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<p>This only calls the status handlers if the status changes. </p>
 
 </div>
 </div>
@@ -1159,6 +1348,87 @@ Static Protected Attributes</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_location_fusion_r_k.html">LocationFusionRK</a>&amp;</dd></dl>
 <p>Even though the parameter is in milliseconds, you probably shouldn't publish more often than every few minutes.</p>
 <p>If you are using location fusion on a non-Tracker device it costs 50 data operations per fusion request, so doing location fusion frequently on the free plan may cause your account to be paused due to running out of data operations. </p>
+
+</div>
+</div>
+<a id="ad623e5db1f26c2bd2ec4b4d012670cb5" name="ad623e5db1f26c2bd2ec4b4d012670cb5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad623e5db1f26c2bd2ec4b4d012670cb5">&#9670;&#160;</a></span>withStatusHandler()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_location_fusion_r_k.html">LocationFusionRK</a> &amp; LocationFusionRK::withStatusHandler </td>
+          <td>(</td>
+          <td class="paramtype">const char *</td>          <td class="paramname"><span class="paramname"><em>cmd</em>, </span></td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::function&lt; void(<a class="el" href="#ac482bacda7a2b3243a647ea705c283ee">Status</a>)&gt;</td>          <td class="paramname"><span class="paramname"><em>handler</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Adds a handler when the status has changed. Added in version 0.0.3. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">cmd</td><td></td></tr>
+    <tr><td class="paramname">handler</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_location_fusion_r_k.html">LocationFusionRK</a>&amp;</dd></dl>
+<p>Your handler is called when the "cmd" field within the function JSON matches.</p>
+<p>The handler can be a C function or C++11 lambda. The prototype is:</p>
+<p>void handler(Status status)</p>
+<ul>
+<li>status The new status value</li>
+</ul>
+<p>This method uses a callback to be notified when the status changes. It is called from the library's worker thread so you should not do anything that will block in your callback. </p>
+
+</div>
+</div>
+<a id="a1bc1bcbc72e30d3d95fd4f7108ceff2b" name="a1bc1bcbc72e30d3d95fd4f7108ceff2b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1bc1bcbc72e30d3d95fd4f7108ceff2b">&#9670;&#160;</a></span>withThreadStackSize()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_location_fusion_r_k.html">LocationFusionRK</a> &amp; LocationFusionRK::withThreadStackSize </td>
+          <td>(</td>
+          <td class="paramtype">size_t</td>          <td class="paramname"><span class="paramname"><em>size</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Sets the worker thread stack size. Must be set before <a class="el" href="#ae3286ce07f8b3080f3e7382cf6d1660d" title="Perform setup operations; call this from global application setup()">setup()</a> </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">size</td><td>in bytes. The default if you do not call this is 6144 </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_location_fusion_r_k.html">LocationFusionRK</a>&amp;</dd></dl>
+<p>Prior to version 0.0.4 the stack was 3072 bytes, but it was increased due to SOS+13 on b5som devices. You can further customize the size by calling this method prior to <a class="el" href="#ae3286ce07f8b3080f3e7382cf6d1660d" title="Perform setup operations; call this from global application setup()">setup()</a>. </p>
 
 </div>
 </div>

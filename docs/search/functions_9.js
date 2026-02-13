@@ -8,5 +8,7 @@ var searchData=
   ['withlocenhancedhandler_5',['withLocEnhancedHandler',['../class_location_fusion_r_k.html#a7eb11317b27c7177160883245a2ed08c',1,'LocationFusionRK']]],
   ['withpublishmanual_6',['withPublishManual',['../class_location_fusion_r_k.html#a82b57c739d7e61b12fdb3c9533b20b20',1,'LocationFusionRK']]],
   ['withpublishonce_7',['withPublishOnce',['../class_location_fusion_r_k.html#a2a5992b6ec9e8b024f0311800b1d084b',1,'LocationFusionRK']]],
-  ['withpublishperiodic_8',['withPublishPeriodic',['../class_location_fusion_r_k.html#a535ed2c03358f337256ccb406c7531fa',1,'LocationFusionRK']]]
+  ['withpublishperiodic_8',['withPublishPeriodic',['../class_location_fusion_r_k.html#a535ed2c03358f337256ccb406c7531fa',1,'LocationFusionRK']]],
+  ['withstatushandler_9',['withStatusHandler',['../class_location_fusion_r_k.html#ad623e5db1f26c2bd2ec4b4d012670cb5',1,'LocationFusionRK']]],
+  ['withthreadstacksize_10',['withThreadStackSize',['../class_location_fusion_r_k.html#a1bc1bcbc72e30d3d95fd4f7108ceff2b',1,'LocationFusionRK']]]
 ];

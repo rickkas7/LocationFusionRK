@@ -4,8 +4,8 @@ var indexSectionsWithContent =
   1: "cl",
   2: "fgilorstuw~",
   3: "_acehlmnpst",
-  4: "p",
-  5: "mop",
+  4: "ps",
+  5: "ilmop",
   6: "l"
 };
 
